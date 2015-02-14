@@ -16,15 +16,17 @@ complete <- function(directory, id = 1:332) {
 # note: read.csv() function needs the header parameter.
 # note: is.na() function will force data frames into matrices.
 # note: complete.cases() does exactly this.
+# note: use sum() to count the number of TRUEs in a logical vector.
     
     files <- list.files(directory, full.names = TRUE)
     ## Store full path names to a  files (character vector) to read the files directly
     monitor_data <- lapply(files[id], function(x) read.csv(x, header = TRUE))
     ## Store all selected monitors' data to monitor_data (list)
-    logical_vector <- lapply(monitor_data, function(x) !is.na(x))
-    valid_logical <- lapply(logical_vector, function(x) x[x[,'Date'] == TRUE & x[,'sulfate'] == TRUE
-                                                          & x[,'nitrate'] == TRUE & x[,'ID'] == TRUE,])
-    nobs <- sapply(valid_logical, nrow)
+#     logical_vector <- lapply(monitor_data, function(x) !is.na(x))
+#     valid_logical <- lapply(logical_vector, function(x) x[x[,'Date'] == TRUE & x[,'sulfate'] == TRUE
+#                                                           & x[,'nitrate'] == TRUE & x[,'ID'] == TRUE,])
+#     nobs <- sapply(valid_logical, nrow)
+    nobs <- sapply(monitor_data, function(x) sum(complete.cases(x)))
     ## Count the number of rows which contain all 'TRUE' values.
     data.frame('id' = id, 'nobs' = nobs)
     ## Combine the two vectors into a data frame
