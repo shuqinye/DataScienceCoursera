@@ -14,12 +14,16 @@ corr <- function(directory, threshold = 0) {
 # note: when coercing a data frame into matrix, consider it's data class/type.
 # note: for lists, pay attention to the difference between '[' &'[[' when subsetting!
 # note: to return a certain value, just type the variable name at the end in the function.
+# note: complete.cases() returns a logical vector.
+# note: lapply(x, FUN, ...), the '...' can pass in the variables following the function.
     
     files <- list.files(directory, full.names = TRUE)
-    data <- lapply(files, function(x) read.csv(x, header = TRUE))
+#     data <- lapply(files, function(x) read.csv(x, header = TRUE))
+    data <- lapply(files, read.csv, header = TRUE)
     # Store all the data to the list 'data'
-    valid_data <- lapply(data, function(x) x[!is.na(x$Date) & !is.na(x$sulfate) & !is.na(x$nitrate) & !is.na(x$ID),])
-    # Store all complete cases in valid_data
+    valid_data <- lapply(data, function(x) x[complete.cases(x),])
+#     valid_data <- lapply(data, function(x) x[!is.na(x$Date) & !is.na(x$sulfate) & !is.na(x$nitrate) & !is.na(x$ID),])
+#     Store all complete cases in valid_data
     if (is.null(valid_data) == TRUE){
         numeric(0)
     }
